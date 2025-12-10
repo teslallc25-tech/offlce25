@@ -1,0 +1,28 @@
+services:
+  - type: web
+    name: offlce25
+    env: python
+    plan: free
+    buildCommand: "pip install -r requirements.txt"
+    startCommand: "gunicorn officebackend.wsgi:application"
+    envVars:
+      DJANGO_SETTINGS_MODULE: "officebackend.settings_render"
+      MYSQLDATABASE:
+        fromDatabase: mysql
+        property: database
+      MYSQLUSER:
+        fromDatabase: mysql
+        property: user
+      MYSQLPASSWORD:
+        fromDatabase: mysql
+        property: password
+      MYSQLHOST:
+        fromDatabase: mysql
+        property: host
+      MYSQLPORT:
+        fromDatabase: mysql
+        property: port
+
+databases:
+  - name: mysql
+    plan: free
