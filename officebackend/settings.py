@@ -15,7 +15,6 @@ DEBUG = os.environ.get('DJANGO_DEBUG', 'True') == 'True'
 
 ALLOWED_HOSTS = ['*']
 
-
 # --------------------
 # Applications
 # --------------------
@@ -66,14 +65,28 @@ TEMPLATES = [
 WSGI_APPLICATION = 'officebackend.wsgi.application'
 
 # --------------------
-# Database
+# Database (Dual Setup: SQLite for local, MySQL for Render/Railway)
 # --------------------
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+if os.environ.get("MYSQLHOST") or os.environ.get("RENDER"):
+    # Use Railway MySQL when deployed
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.mysql",
+            "NAME": os.environ.get("MYSQLDATABASE"),
+            "USER": os.environ.get("MYSQLUSER"),
+            "PASSWORD": os.environ.get("MYSQLPASSWORD"),
+            "HOST": os.environ.get("MYSQLHOST"),
+            "PORT": os.environ.get("MYSQLPORT"),
+        }
     }
-}
+else:
+    # Local development uses SQLite
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.sqlite3",
+            "NAME": BASE_DIR / "db.sqlite3",
+        }
+    }
 
 # --------------------
 # Password validation
@@ -97,9 +110,9 @@ USE_TZ = True
 # Static files
 # --------------------
 STATIC_URL = '/static/'
-STATIC_ROOT = BASE_DIR / 'staticfiles'  # for EB deployment
-# Optional: WhiteNoise to serve static files in EB
-MIDDLEWARE.insert(1, 'whitenoise.middleware.WhiteNoiseMiddleware')  # after SecurityMiddleware
+STATIC_ROOT = BASE_DIR / 'staticfiles'
+# Optional: WhiteNoise to serve static files
+MIDDLEWARE.insert(1, 'whitenoise.middleware.WhiteNoiseMiddleware')
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
