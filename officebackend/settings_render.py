@@ -7,19 +7,19 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Security
 # --------------------
 SECRET_KEY = os.environ.get(
-    'DJANGO_SECRET_KEY',
+    'DJANGO_SECRET_KEY', 
     'django-insecure-3v$!1j%&15cp&lcw1uib3t4)ojrcpn5%(6+%tt7r2^9370av+3'
 )
 
-DEBUG = os.environ.get('DJANGO_DEBUG', 'False') == 'True'
+DEBUG = os.environ.get('DJANGO_DEBUG', 'True') == 'True'
 
-ALLOWED_HOSTS = ['*']   # Your Render domain is allowed automatically
+ALLOWED_HOSTS = ['*']
 
 # --------------------
 # Applications
 # --------------------
 INSTALLED_APPS = [
-    "corsheaders",
+    "corsheaders",  # MUST be first for CORS
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -65,19 +65,19 @@ TEMPLATES = [
 WSGI_APPLICATION = 'officebackend.wsgi.application'
 
 # --------------------
-# Database (Railway / Render MySQL)
+# Database
 # --------------------
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': os.environ.get('MYSQLDATABASE'),
-        'USER': os.environ.get('MYSQLUSER'),
-        'PASSWORD': os.environ.get('MYSQLPASSWORD'),
-        'HOST': os.environ.get('MYSQLHOST'),
-        'PORT': os.environ.get('MYSQLPORT', '3306'),
+        'NAME': 'railway',
+        'USER': 'root',
+        'PASSWORD': 'jFzQXuAPpItjOQKgyAIYiAfPrGhoRKdJ',
+        'HOST': 'shuttle.proxy.rlwy.net',
+        'PORT': '54411',
         'OPTIONS': {
             'charset': 'utf8mb4',
-        }
+        },
     }
 }
 
@@ -104,6 +104,7 @@ USE_TZ = True
 # --------------------
 STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
+MIDDLEWARE.insert(1, 'whitenoise.middleware.WhiteNoiseMiddleware')
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
